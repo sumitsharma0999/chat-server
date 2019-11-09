@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <style>
+            #chat-container {
+                margin-top: 20px;
+            }
+            #msg-container {
+                margin-top: 40px;
+            }
+        </style>
+</head>
+    <body>
+        <h1>
+                Domeggle
+            </h1>
+            <div id="username-container">
+                <input type="text" id="username" placeholder="Enter your username">
+                <input type="button" id="start" value="Start">
+            </div>
+            <div id="chat-container">
+                <div id="notifications"></div>
+                <div>
+                    <input type="text" id="message" placeholder="Enter message">
+                    <input type="button" id="send" value="Send">
+                </div>
+                <div id="msg-container"/>
+            </div>
+            <script>
+                var ws = new WebSocket('ws://localhost:40510');
+            
+                ws.onopen = function () {
+                        console.log('websocket is connected ...')
+            
+                        document.getElementById("start").onclick = function() {
+                    
+                             var username = document.getElementById("username").value;
+            
+                             ws.send(JSON.stringify({
+                                type: "username",
+                                value: username,
+                            }));
+                        }
+            
+                        document.getElementById("send").onclick = function() {
+                            var msgText = document.getElementById("message").value;
+                            ws.send(JSON.stringify({
+                                type: "msg",
+                                msgText: msgText,
+                            }));
+                            addMessage(msgText, true);
+                        }
+                    }
+                ws.onmessage = function (ev) {
+                        var data = JSON.parse(ev.data);
+                        console.log(data);
+                        if(data.type == 'connection') {
+                            addNotification(data.msg);
+                        } else if(data.type === 'msg'){
+                            addMessage(data.msgText, false);
+                        }
+                    };
+            
+                var notificationsContainer = document.getElementById("notifications");    
+                var chatContainer = document.getElementById("msg-container");
+
+                function addNotification(content){
+                    var p = document.createElement('p');
+                    p.textContent = content;
+                    notificationsContainer.append(p);
+                }
+                function addMessage(content, self){
+                    var p = document.createElement('p');
+                    var user = self ? 'You: ' : 'Other: ';
+                    var userElem = document.createElement('b');
+                    userElem.textContent = user;
+                    p.append(userElem);
+                    var msgElem = document.createElement('span');
+                    msgElem.textContent = content;
+                    p.append(msgElem);
+                    chatContainer.append(p);
+                }
+            </script>
+</body>
+</html>
