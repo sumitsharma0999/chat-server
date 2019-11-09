@@ -5,7 +5,7 @@ This is a omegle like chat server, which I created just for hands on purpose. It
 
 The main chat server uses NodeJS. A microservice to match random strangers is written using Java.
 
-There is **a lot** that has not been taken care of in this code (e.g. recovering from an instance going down).
+There is **a lot** that has not been taken care of in this code (e.g. recovering from an instance going down, users with same username, users going offline and joining again etc. etc.).
 
 ## How to run
 
@@ -18,7 +18,7 @@ There is **a lot** that has not been taken care of in this code (e.g. recovering
 
 ### Start services with docker-compose
 <code>
-docker-compose -f docker-compose.yml  up -d --scale web=<NUM_SERVERS>
+docker-compose -f docker-compose.yml  up -d --scale web=&lt;NUM_SERVERS&gt;
 </code>
 
 `NUM_SERVERS` - number of instances for the nodejs application server (e.g. 2)
